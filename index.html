@@ -1,13 +1,350 @@
+<!--
+Modern Portfolio - Single-file HTML/CSS/JS
+Drop this file into your repo (e.g., rename to index.html) and push to GitHub Pages.
+Assets: Replace placeholder images (unsplash links) and project thumbnails with your images.
+
+Features included:
+- Responsive layout
+- Sticky nav + hamburger menu
+- Hero section with CTA
+- About, Skills, Projects grid
+- Contact footer + social links
+- Dark / Light mode toggle (saved to localStorage)
+- Minimal, modern aesthetic with CSS variables
+
+If you want a Tailwind or React version, tell me and I will convert it.
+-->
+
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>porto-jim</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jim Raihan — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <meta name="description" content="Portfolio of Jim Raihan — developer & maker" />
+  <style>
+    :root{
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #98a0b3;
+      --accent: #6ee7b7;
+      --accent-2: #7dd3fc;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 14px;
+      --max-width: 1100px;
+      --ff: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    /* Light mode variables (swapped by .light class) */
+    .light{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --muted: #495057;
+      --accent: #0ea5a4;
+      --accent-2: #0284c7;
+      --glass: rgba(12,18,26,0.03);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:var(--ff);background:linear-gradient(180deg,var(--bg),#081024);color:#e6eef8;line-height:1.5;-webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;display:flex;flex-direction:column;align-items:center;padding:40px 20px;
+    }
+    .container{width:100%;max-width:var(--max-width)}
+
+    /* NAV */
+    header{width:100%;position:sticky;top:18px;z-index:40}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px;background:linear-gradient(180deg,transparent,rgba(255,255,255,0.02));backdrop-filter:blur(6px);border-radius:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#072023}
+    .brand h1{font-size:16px;margin:0}
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav a{color:var(--muted);text-decoration:none;font-weight:600}
+    nav a:hover{color:var(--accent)}
+    .cta{padding:8px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#042024;font-weight:700;text-decoration:none}
+
+    /* Mobile Menu */
+    .menu-btn{display:none;background:transparent;border:0;color:var(--muted);font-weight:700}
+    .menu{display:flex;align-items:center;gap:12px}
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:center;padding:48px 0}
+    .hero .eyebrow{font-weight:700;color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+    .hero h2{font-size:42px;margin:12px 0 12px}
+    .hero p{color:var(--muted);margin:0 0 18px}
+    .hero .actions{display:flex;gap:12px}
+    .card-profile{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:14px;align-items:center}
+    .profile-img{width:100%;height:240px;border-radius:10px;background-size:cover;background-position:center;box-shadow:0 8px 30px rgba(2,6,23,.6)}
+    .profile-meta{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .meta-name{font-weight:700}
+    .meta-role{color:var(--muted);font-size:14px}
+
+    /* SECTIONS */
+    section{margin:36px 0}
+    .card{background:var(--card);border-radius:16px;padding:18px}
+
+    /* Skills */
+    .skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px}
+    .skill{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);text-align:center}
+
+    /* Projects */
+    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .proj{border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);box-shadow:0 6px 20px rgba(2,6,23,.6);display:flex;flex-direction:column}
+    .proj img{width:100%;height:160px;object-fit:cover}
+    .proj .body{padding:12px}
+    .proj h3{margin:0 0 6px}
+    .proj p{margin:0;color:var(--muted);font-size:14px}
+    .proj .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:var(--glass);color:var(--muted)}
+
+    /* Footer */
+    footer{margin-top:40px;width:100%;padding:18px;border-radius:12px;background:linear-gradient(180deg,transparent,rgba(255,255,255,0.02));display:flex;justify-content:space-between;align-items:center}
+
+    /* small screens */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;}
+      .projects-grid{grid-template-columns:repeat(2,1fr)}
+      nav ul{display:none}
+      .menu-btn{display:inline-block}
+    }
+    @media (max-width:620px){
+      .skills-grid{grid-template-columns:repeat(2,1fr)}
+      .projects-grid{grid-template-columns:1fr}
+      body{padding:22px}
+    }
+
+    /* Utility */
+    .muted{color:var(--muted)}
+    .btn-ghost{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted)}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="logo">JR</div>
+          <div>
+            <h1 style="margin:0">Jim Raihan</h1>
+            <div style="font-size:12px;color:var(--muted)">Developer & Maker</div>
+          </div>
+        </div>
+
+        <div class="menu">
+          <nav>
+            <ul>
+              <li><a href="#projects">Projects</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
+
+          <button class="menu-btn" id="menuBtn">Menu</button>
+          <a href="#projects" class="cta">View Projects</a>
+          <button class="btn-ghost" id="themeBtn" title="Toggle dark/light">🌙</button>
+        </div>
+      </div>
+
+      <!-- Mobile Nav popup -->
+      <div id="mobileNav" style="display:none;margin-top:12px;background:var(--card);padding:12px;border-radius:12px">
+        <a href="#projects" style="display:block;padding:8px 0;color:var(--muted)">Projects</a>
+        <a href="#about" style="display:block;padding:8px 0;color:var(--muted)">About</a>
+        <a href="#contact" style="display:block;padding:8px 0;color:var(--muted)">Contact</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Hi, I build things</div>
+          <h2>Designing & building web apps that are simple, performant, and delightful.</h2>
+          <p class="muted">I’m Jim — I work on web projects, tooling, and small app ideas. Recently I built a portfolio site, a small shopping cashier app and a room booking system. I enjoy clean UI and pragmatic engineering.</p>
+
+          <div class="actions">
+            <a class="cta" href="#projects">See my work</a>
+            <a class="btn-ghost" href="https://github.com/Goemay/porto.github.io" target="_blank">Source</a>
+          </div>
+
+          <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
+            <div class="card" style="display:flex;gap:10px;align-items:center;box-shadow:0 8px 30px rgba(2,6,23,.5);border-radius:12px;padding:12px">
+              <div style="width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#042024">JS</div>
+              <div>
+                <div style="font-weight:700">Full‑stack</div>
+                <div class="muted" style="font-size:13px">Node · Express · MySQL</div>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex;gap:10px;align-items:center;box-shadow:0 8px 30px rgba(2,6,23,.5);border-radius:12px;padding:12px">
+              <div style="width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:800;color:#042024">UI</div>
+              <div>
+                <div style="font-weight:700">UI / Frontend</div>
+                <div class="muted" style="font-size:13px">HTML · CSS · JS · Tailwind</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="card-profile">
+          <div class="profile-img" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=1d5a1d3e9a2b6b1f9679b2b3a4c3d6e7')"></div>
+          <div class="profile-meta">
+            <div class="meta-name">Jim Raihan</div>
+            <div class="meta-role">IT Helpdesk Intern / Developer</div>
+            <div style="display:flex;gap:8px">
+              <a href="https://github.com/Goemay" target="_blank" class="btn-ghost">GitHub</a>
+              <a href="https://www.linkedin.com/in/jim-raihan/" target="_blank" class="btn-ghost">LinkedIn</a>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="projects">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 style="margin:0">Projects</h3>
+          <div class="muted">Selected works — click to view demo or source</div>
+        </div>
+
+        <div class="projects-grid" style="margin-top:12px">
+
+          <article class="proj">
+            <img src="https://images.unsplash.com/photo-1526378725858-2f6f3d1b1e6b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd" alt="Project thumbnail">
+            <div class="body">
+              <h3>Shopping Cashier App</h3>
+              <p class="muted">A cashier app that supports scanning barcodes using a phone camera and syncing items to a DB via REST API.</p>
+              <div class="tags">
+                <div class="tag">JavaScript</div>
+                <div class="tag">REST API</div>
+                <div class="tag">Mobile-friendly</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj">
+            <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=efgh" alt="Project thumbnail">
+            <div class="body">
+              <h3>Room Booking System</h3>
+              <p class="muted">NetBeans + MySQL project for room and booking management with a Swing UI and DAO pattern.</p>
+              <div class="tags">
+                <div class="tag">Java</div>
+                <div class="tag">MySQL</div>
+                <div class="tag">Swing</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj">
+            <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ijkl" alt="Project thumbnail">
+            <div class="body">
+              <h3>Portfolio Site</h3>
+              <p class="muted">This portfolio — rebuilt with a modern, minimal design. Deploys to GitHub Pages.</p>
+              <div class="tags">
+                <div class="tag">HTML</div>
+                <div class="tag">CSS</div>
+                <div class="tag">GH Pages</div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section id="about">
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start">
+          <div class="card">
+            <h3 style="margin-top:0">About me</h3>
+            <p class="muted">I’m a developer who loves building useful, maintainable apps. I enjoy simplifying complex problems into clear interfaces and small, testable components. I’ve used Java for desktop apps, Node/Express and MySQL for backend work, and vanilla JS/HTML/CSS and Tailwind for front‑end work.</p>
+
+            <h4>What I bring</h4>
+            <ul class="muted">
+              <li>Care for UX and performance</li>
+              <li>Good with debugging and tooling</li>
+              <li>Comfortable learning new stacks quickly</li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="card">
+              <h4 style="margin:0">Skills</h4>
+              <div class="skills-grid">
+                <div class="skill">JavaScript</div>
+                <div class="skill">HTML & CSS</div>
+                <div class="skill">Java</div>
+                <div class="skill">MySQL</div>
+                <div class="skill">Git</div>
+                <div class="skill">REST</div>
+                <div class="skill">Tailwind</div>
+                <div class="skill">NetBeans</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <h4 style="margin:0">Contact</h4>
+              <p class="muted" style="margin:8px 0">Want to work together or have a quick question?</p>
+              <a href="mailto:your-email@example.com" class="cta">Email me</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="card">
+          <h3 style="margin:0">Get in touch</h3>
+          <p class="muted">Prefer email? <a href="mailto:your-email@example.com">your-email@example.com</a> — or connect on LinkedIn / GitHub.</p>
+
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <a class="btn-ghost" href="https://github.com/Goemay" target="_blank">GitHub</a>
+            <a class="btn-ghost" href="https://www.linkedin.com/in/jim-raihan/" target="_blank">LinkedIn</a>
+            <a class="btn-ghost" href="#projects">Resume</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="muted">© " + new Date().getFullYear() + " Jim Raihan</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="btn-ghost" href="#contact">Hire me</a>
+        <a href="https://github.com/Goemay/porto.github.io" target="_blank" class="muted">Source</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    let mobileOpen = false;
+    menuBtn && menuBtn.addEventListener('click', () => {
+      mobileOpen = !mobileOpen;
+      mobileNav.style.display = mobileOpen ? 'block' : 'none';
+      menuBtn.textContent = mobileOpen ? 'Close' : 'Menu';
+    });
+
+    // Theme toggle (dark / light)
+    const themeBtn = document.getElementById('themeBtn');
+    const root = document.documentElement;
+    // use localStorage to remember
+    const saved = localStorage.getItem('site-theme');
+    if(saved === 'light') document.documentElement.classList.add('light');
+    themeBtn && themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      const isLight = document.documentElement.classList.contains('light');
+      localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
+      themeBtn.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    // small helper: replace the footer year (avoid inline JS in HTML string)
+    (function setYear(){
+      try{
+        const footer = document.querySelector('footer .muted');
+        if(footer) footer.textContent = '© ' + new Date().getFullYear() + ' Jim Raihan';
+      }catch(e){/*ignore*/}
+    })();
+  </script>
+</body>
 </html>
